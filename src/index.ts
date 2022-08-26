@@ -13,25 +13,28 @@ writeFileSync('key.json', process.env.GKE_SERVICE_ACCOUNT_KEY as string);
 const main = async () => {
   await initTerminal();
   unlink('key.json', () => {});
-  const servicePortMap: { [k: string]: number } = Object.fromEntries(
-    JSON.parse(await run('kubectl -ojson get service')).items.map(
-      (service: Service) => [
-        service.metadata.name,
-        service.spec.ports[0].targetPort,
-      ],
-    ),
-  );
-  JSON.parse(await run('kubectl -ojson get ingress router'))
-    .spec.rules.filter(
+  try {
+    const rules = JSON.parse(
+      await run('kubectl -ojson get ingress router'),
+    ).spec.rules.filter(
       (rule: Rule) => rule.http.paths[0].backend.service.name !== 'router',
-    )
-    .forEach((rule: Rule) =>
+    );
+    const servicePortMap: { [k: string]: number } = Object.fromEntries(
+      JSON.parse(await run('kubectl -ojson get service')).items.map(
+        (service: Service) => [
+          service.metadata.name,
+          service.spec.ports[0].targetPort,
+        ],
+      ),
+    );
+    rules.forEach((rule: Rule) =>
       addRoute({
         deployment: rule.http.paths[0].backend.service.name,
         host: rule.host,
         port: servicePortMap[rule.http.paths[0].backend.service.name],
       }),
     );
+  } catch {}
   await updateRouter();
 
   const app = express();

@@ -9,14 +9,12 @@ export const routes: Route[] = [
   },
 ];
 
-const getYML = () => `
-apiVersion: networking.k8s.io/v1
+const getIngressYML = () => `apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: router
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ${process.env.IP}
-
 spec:
   rules:${routes
     .map(
@@ -32,11 +30,9 @@ spec:
                 port:
                   number: 80`,
     )
-    .join('')}
----${routes
-  .map(
-    ({ deployment, port }) => `
-apiVersion: v1
+    .join('')}`;
+
+const getServiceYML = ({ deployment, port }: Route) => `apiVersion: v1
 kind: Service
 metadata:
   name: ${deployment}
@@ -48,47 +44,44 @@ spec:
       targetPort: ${port || 80}
 
   selector:
-    app: ${deployment}
-`,
-  )
-  .join('---')}`;
+    app: ${deployment}`;
 
-export const updateRouter = async (additionalObjects = '') => {
-  writeFileSync('config.yml', getYML() + additionalObjects);
+const getDeploymentYML = ({ deployment }: Route, image: string) => `
+    kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: ${deployment}
+      spec:
+        selector:
+          matchLabels:
+            app: ${deployment}
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: ${deployment}
+      template:
+        metadata:
+          labels:
+            app: ${deployment}
+        spec:
+          containers:
+            - name: ${deployment}
+              image: ${image}`;
+
+export const updateRouter = async (...additionalObjects: string[]) => {
+  writeFileSync(
+    'config.yml',
+    [getIngressYML(), ...additionalObjects].join('\n---\n'),
+  );
   await run('kubectl apply -f config.yml');
   unlink('config.yml', () => {});
 };
 
-/**
- * Adds a route to the router.
- * @param route - Route to add to the router
- * @param update - The image to use when deploying the new route
- */
-export const addRoute = async (route: Route, update?: string) => {
+export const addRoute = async (route: Route, image?: string) => {
   routes.push(route);
-  if (update) {
-    await updateRouter(`---
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: ${route.deployment}
-  spec:
-    selector:
-      matchLabels:
-        app: ${route.deployment}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ${route.deployment}
-  template:
-    metadata:
-      labels:
-        app: ${route.deployment}
-    spec:
-      containers:
-        - name: ${route.deployment}
-          image: ${update}`);
+  if (image) {
+    await updateRouter(getDeploymentYML(route, image), getServiceYML(route));
   }
 };
 
