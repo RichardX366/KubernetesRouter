@@ -1,5 +1,6 @@
 import { Express, Handler } from 'express';
 import { readFileSync } from 'fs';
+import { cwd } from 'process';
 import { hydrateBrackets } from './constants';
 import {
   addRoute,
@@ -75,7 +76,7 @@ export const handleRouting = (app: Express) => {
       if (req.signedCookies?.auth === process.env.PASSWORD) {
         res.send(formatIndex());
       } else {
-        res.sendFile(__dirname + '/html/login.html');
+        res.sendFile(cwd() + '/src/html/login.html');
       }
     }, 75 + Math.random() * 50),
   );

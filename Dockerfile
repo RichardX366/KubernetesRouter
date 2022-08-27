@@ -11,5 +11,5 @@ COPY yarn.lock ./
 RUN yarn
 COPY . .
 RUN npx tsc
-COPY ./src ./dist
+RUN npx tailwindcss -i ./src/tailwind.css -o ./src/public/style.css
 CMD ["yarn", "start"]
