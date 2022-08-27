@@ -44,6 +44,20 @@ function edit(deployment) {
   imageElem.style.display = 'none';
 }
 
+function refresh(deployment) {
+  if (!confirm('Are you sure you want to refresh this deployment?')) return;
+  const { response } = fetch('/refresh', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ deployment }),
+  });
+  if (response) {
+    alert('Deployment successfully refreshed');
+  } else {
+    alert('An error occurred with refreshing this deployment');
+  }
+}
+
 function createMode() {
   mode = 'create';
   formTitle.innerHTML = 'Create Deployment';
@@ -83,6 +97,16 @@ async function submit() {
         <td
           class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
         >${portInput.value}</td>
+        <td
+          class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+        >
+          <button
+            class="text-green-600 hover:text-green-700"
+            onclick="refresh('${deploymentInput.value}')"
+          >
+            Refresh
+          </button>
+        </td>
         <td
           class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
         >

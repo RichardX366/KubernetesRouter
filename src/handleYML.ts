@@ -99,3 +99,8 @@ export const removeRoute = async (deployment: string) => {
 google-cloud-sdk/bin/kubectl delete service ${deployment}`);
   updateRouter();
 };
+
+export const refreshDeployment = async (deployment: string) =>
+  await run(
+    'google-cloud-sdk/bin/kubectl rollout restart deployment ' + deployment,
+  );

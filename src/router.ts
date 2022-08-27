@@ -1,7 +1,13 @@
 import { Express, Handler } from 'express';
 import { readFileSync } from 'fs';
 import { hydrateBrackets } from './constants';
-import { addRoute, editRoute, removeRoute, routes } from './handleYML';
+import {
+  addRoute,
+  editRoute,
+  refreshDeployment,
+  removeRoute,
+  routes,
+} from './handleYML';
 
 const requireAuth: Handler = (req, res, next) => {
   if (req.signedCookies?.auth === process.env.PASSWORD) {
@@ -27,6 +33,16 @@ const formatIndex = () =>
           <td
             class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
           >${port}</td>
+          <td
+            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+          >
+            <button
+              class="text-green-600 hover:text-green-700"
+              onclick="refresh('${deployment}')"
+            >
+              Refresh
+            </button>
+          </td>
           <td
             class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
           >
@@ -88,6 +104,18 @@ export const handleRouting = (app: Express) => {
         typeof req.body.port === 'number'
       ) {
         await editRoute(req.body);
+        res.send('success');
+      } else {
+        throw 'Invalid request';
+      }
+    } catch (e: any) {
+      res.status(400).send(e.message || e);
+    }
+  });
+  app.post('/refresh', requireAuth, async (req, res) => {
+    try {
+      if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
+        await refreshDeployment(req.body.deployment);
         res.send('success');
       } else {
         throw 'Invalid request';

@@ -7,6 +7,7 @@ const terminal = spawn('bash');
 
 terminal.stdout.on('data', (rawData) => {
   const data = rawData.toString();
+  console.log(data);
   if (data.includes('kubeconfig entry generated for') || initialized) {
     initialized = true;
     resolver();
