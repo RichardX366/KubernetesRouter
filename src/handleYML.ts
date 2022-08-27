@@ -10,7 +10,7 @@ export const routes: Route[] = [
   },
 ];
 
-const getIngressYML = () => `apiVersion: extensions/v1beta1
+const getIngressYML = () => `apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: router
