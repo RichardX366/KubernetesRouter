@@ -47,28 +47,30 @@ spec:
   selector:
     app: ${deployment}`;
 
-const getDeploymentYML = ({ deployment }: Route, image: string) => `
-    kind: Deployment
-    apiVersion: apps/v1
+const getDeploymentYML = (
+  { deployment }: Route,
+  image: string,
+) => `kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ${deployment}
+  spec:
+    selector:
+      matchLabels:
+        app: ${deployment}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${deployment}
+  template:
     metadata:
-      name: ${deployment}
-      spec:
-        selector:
-          matchLabels:
-            app: ${deployment}
+      labels:
+        app: ${deployment}
     spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          app: ${deployment}
-      template:
-        metadata:
-          labels:
-            app: ${deployment}
-        spec:
-          containers:
-            - name: ${deployment}
-              image: ${image}`;
+      containers:
+        - name: ${deployment}
+          image: ${image}`;
 
 export const updateRouter = (...additionalObjects: string[]) => {
   writeFileSync(
