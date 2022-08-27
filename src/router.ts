@@ -93,7 +93,7 @@ export const handleRouting = (app: Express) => {
       }
     }, 75 + Math.random() * 50);
   });
-  app.get('/logout', (req, res) => {
+  app.post('/logout', (req, res) => {
     res.clearCookie('auth');
     res.send('success');
   });

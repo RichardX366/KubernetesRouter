@@ -158,3 +158,13 @@ async function submit() {
   }
   createMode();
 }
+
+async function logout() {
+  if (!confirm('Are you sure you want to logout?')) return;
+  const { ok } = await fetch('/logout', { method: 'POST' });
+  if (ok) {
+    window.location.reload();
+  } else {
+    alert('An error occurred with logging out');
+  }
+}
