@@ -16,6 +16,7 @@ metadata:
   name: router
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ${process.env.IP}
+
 spec:
   rules:${routes
     .map(
@@ -70,7 +71,7 @@ spec:
     spec:
       containers:
         - name: ${deployment}
-          image: ${image}`;
+          image: ${image}:latest`;
 
 export const updateRouter = (...additionalObjects: string[]) => {
   writeFileSync(
