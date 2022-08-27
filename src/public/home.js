@@ -81,7 +81,7 @@ async function submit() {
       body: JSON.stringify({
         deployment: deploymentInput.value,
         host: hostInput.value,
-        port: portInput.value,
+        port: +portInput.value,
         image: imageInput.value,
       }),
     });
@@ -142,7 +142,7 @@ async function submit() {
       body: JSON.stringify({
         deployment: deploymentInput.value,
         host: hostInput.value,
-        port: portInput.value,
+        port: +portInput.value,
       }),
     });
     if (response) {
