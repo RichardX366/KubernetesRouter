@@ -11,7 +11,7 @@
     "express": "^4.18.1"
   },
   "scripts": {
-    "start": "tailwindcss -i ./src/tailwind.css -o ./src/public/style.css && node dist/index",
+    "start": "tailwindcss -i ./dist/tailwind.css -o ./dist/public/style.css && node dist/index",
     "tailwind": "tailwindcss -i ./src/tailwind.css -o ./src/public/style.css -w",
     "dev": "nodemon src/index.ts"
   },
