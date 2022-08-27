@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config();
 import { writeFileSync, unlink } from 'fs';
 import { Rule, Service } from './constants';
-import { addRoute, routes, updateRouter } from './handleYML';
+import { routes, updateRouter } from './handleYML';
 import { initTerminal, run } from './terminal';
 import express from 'express';
 import { handleRouting } from './router';
