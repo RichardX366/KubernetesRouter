@@ -20,7 +20,7 @@ export const initTerminal = () =>
       `
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 google-cloud-sdk/bin/gcloud auth activate-service-account ${key.client_email} --key-file key.json --project=${key.project_id}
-google-cloud-sdk/bin/gcloud container clusters get-credentials ${process.env.CLUSTER_NAME}
+google-cloud-sdk/bin/gcloud container clusters get-credentials ${process.env.CLUSTER_NAME} --region us-central1
 `,
     );
   });

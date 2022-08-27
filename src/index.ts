@@ -15,17 +15,17 @@ const main = async () => {
   unlink('key.json', () => {});
   try {
     const rules = JSON.parse(
-      await run('kubectl -ojson get ingress router'),
+      await run('google-cloud-sdk/bin/kubectl -ojson get ingress router'),
     ).spec.rules.filter(
       (rule: Rule) => rule.http.paths[0].backend.service.name !== 'router',
     );
     const servicePortMap: { [k: string]: number } = Object.fromEntries(
-      JSON.parse(await run('kubectl -ojson get service')).items.map(
-        (service: Service) => [
-          service.metadata.name,
-          service.spec.ports[0].targetPort,
-        ],
-      ),
+      JSON.parse(
+        await run('google-cloud-sdk/bin/kubectl -ojson get service'),
+      ).items.map((service: Service) => [
+        service.metadata.name,
+        service.spec.ports[0].targetPort,
+      ]),
     );
     rules.forEach((rule: Rule) =>
       routes.push({

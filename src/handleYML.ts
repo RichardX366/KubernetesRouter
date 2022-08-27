@@ -75,7 +75,7 @@ export const updateRouter = async (...additionalObjects: string[]) => {
     'config.yml',
     [getIngressYML(), ...additionalObjects].join('\n---\n'),
   );
-  await run('kubectl apply -f config.yml');
+  await run('google-cloud-sdk/bin/kubectl apply -f config.yml');
   unlink('config.yml', () => {});
 };
 
@@ -95,7 +95,7 @@ export const removeRoute = async (deployment: string) => {
   if (index !== -1) {
     routes.splice(index, 1);
   }
-  await run(`kubectl delete deployment ${deployment}
-kubectl delete service ${deployment}`);
+  await run(`google-cloud-sdk/bin/kubectl delete deployment ${deployment}
+google-cloud-sdk/bin/kubectl delete service ${deployment}`);
   updateRouter();
 };
