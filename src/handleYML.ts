@@ -1,6 +1,6 @@
 import { writeFileSync, unlink } from 'fs';
 import { Route } from './constants';
-import { run } from './terminal';
+import { execSync } from 'child_process';
 
 export const routes: Route[] = [
   {
@@ -70,37 +70,37 @@ const getDeploymentYML = ({ deployment }: Route, image: string) => `
             - name: ${deployment}
               image: ${image}`;
 
-export const updateRouter = async (...additionalObjects: string[]) => {
+export const updateRouter = (...additionalObjects: string[]) => {
   writeFileSync(
     'config.yml',
     [getIngressYML(), ...additionalObjects].join('\n---\n'),
   );
-  await run('google-cloud-sdk/bin/kubectl apply -f config.yml');
+  execSync('google-cloud-sdk/bin/kubectl apply -f config.yml');
   unlink('config.yml', () => {});
 };
 
-export const addRoute = async (route: Route, image: string) => {
+export const addRoute = (route: Route, image: string) => {
   routes.push(route);
-  await updateRouter(getDeploymentYML(route, image), getServiceYML(route));
+  updateRouter(getDeploymentYML(route, image), getServiceYML(route));
 };
 
-export const editRoute = async (route: Route) => {
+export const editRoute = (route: Route) => {
   const index = routes.findIndex(({ deployment: d }) => d === route.deployment);
   routes[index] = route;
-  await updateRouter(getServiceYML(route));
+  updateRouter(getServiceYML(route));
 };
 
-export const removeRoute = async (deployment: string) => {
+export const removeRoute = (deployment: string) => {
   const index = routes.findIndex(({ deployment: d }) => d === deployment);
   if (index !== -1) {
     routes.splice(index, 1);
   }
-  await run(`google-cloud-sdk/bin/kubectl delete deployment ${deployment}
+  execSync(`google-cloud-sdk/bin/kubectl delete deployment ${deployment}
 google-cloud-sdk/bin/kubectl delete service ${deployment}`);
   updateRouter();
 };
 
-export const refreshDeployment = async (deployment: string) =>
-  await run(
+export const refreshDeployment = (deployment: string) =>
+  execSync(
     'google-cloud-sdk/bin/kubectl rollout restart deployment ' + deployment,
   );
