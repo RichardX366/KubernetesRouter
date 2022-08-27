@@ -15,19 +15,17 @@ initTerminal();
 unlink('key.json', () => {});
 try {
   const rules = JSON.parse(
-    execSync(
-      'google-cloud-sdk/bin/kubectl -ojson get ingress router',
-    ).toString(),
+    execSync('kubectl -ojson get ingress router').toString(),
   ).spec.rules.filter(
     (rule: Rule) => rule.http.paths[0].backend.service.name !== 'router',
   );
   const servicePortMap: { [k: string]: number } = Object.fromEntries(
-    JSON.parse(
-      execSync('google-cloud-sdk/bin/kubectl -ojson get service').toString(),
-    ).items.map((service: Service) => [
-      service.metadata.name,
-      service.spec.ports[0].targetPort,
-    ]),
+    JSON.parse(execSync('kubectl -ojson get service').toString()).items.map(
+      (service: Service) => [
+        service.metadata.name,
+        service.spec.ports[0].targetPort,
+      ],
+    ),
   );
   rules.forEach((rule: Rule) =>
     routes.push({

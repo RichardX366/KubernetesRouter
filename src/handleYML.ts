@@ -75,7 +75,7 @@ export const updateRouter = (...additionalObjects: string[]) => {
     'config.yml',
     [getIngressYML(), ...additionalObjects].join('\n---\n'),
   );
-  execSync('google-cloud-sdk/bin/kubectl apply -f config.yml');
+  execSync('kubectl apply -f config.yml');
   unlink('config.yml', () => {});
 };
 
@@ -95,12 +95,10 @@ export const removeRoute = (deployment: string) => {
   if (index !== -1) {
     routes.splice(index, 1);
   }
-  execSync(`google-cloud-sdk/bin/kubectl delete deployment ${deployment}
-google-cloud-sdk/bin/kubectl delete service ${deployment}`);
+  execSync(`kubectl delete deployment ${deployment}
+kubectl delete service ${deployment}`);
   updateRouter();
 };
 
 export const refreshDeployment = (deployment: string) =>
-  execSync(
-    'google-cloud-sdk/bin/kubectl rollout restart deployment ' + deployment,
-  );
+  execSync('kubectl rollout restart deployment ' + deployment);

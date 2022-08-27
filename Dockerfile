@@ -10,4 +10,5 @@ RUN tar -xf google-cloud-cli-399.0.0-linux-x86_64.tar.gz
 RUN rm google-cloud-cli-399.0.0-linux-x86_64.tar.gz
 RUN google-cloud-sdk/install.sh -q --path-update=True
 RUN google-cloud-sdk/bin/gcloud components install kubectl
+ENV PATH=$PATH:/app/google-cloud-sdk/bin
 CMD ["yarn", "start"]
