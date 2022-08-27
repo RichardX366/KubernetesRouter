@@ -55,10 +55,9 @@ const getDeploymentYML = (
 apiVersion: apps/v1
 metadata:
   name: ${deployment}
-  spec:
-    selector:
-      matchLabels:
-        app: ${deployment}
+  labels:
+    app: ${deployment}
+
 spec:
   replicas: 1
   selector:
@@ -98,8 +97,9 @@ export const removeRoute = (deployment: string) => {
   if (index !== -1) {
     routes.splice(index, 1);
   }
-  execSync(`kubectl delete deployment ${deployment}
-kubectl delete service ${deployment}`);
+  execSync(
+    `kubectl delete deployment ${deployment} && kubectl delete service ${deployment}`,
+  );
   updateRouter();
 };
 
