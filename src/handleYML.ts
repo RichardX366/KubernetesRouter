@@ -78,21 +78,17 @@ export const updateRouter = async (...additionalObjects: string[]) => {
   unlink('config.yml', () => {});
 };
 
-export const addRoute = async (route: Route, image?: string) => {
+export const addRoute = async (route: Route, image: string) => {
   routes.push(route);
-  if (image) {
-    await updateRouter(getDeploymentYML(route, image), getServiceYML(route));
-  }
+  await updateRouter(getDeploymentYML(route, image), getServiceYML(route));
 };
 
-export const removeRoute = async (deployment: string, update?: true) => {
+export const removeRoute = async (deployment: string) => {
   const index = routes.findIndex(({ deployment: d }) => d === deployment);
   if (index !== -1) {
     routes.splice(index, 1);
   }
-  if (update) {
-    await run(`kubectl delete deployment ${deployment}
+  await run(`kubectl delete deployment ${deployment}
 kubectl delete service ${deployment}`);
-    updateRouter();
-  }
+  updateRouter();
 };

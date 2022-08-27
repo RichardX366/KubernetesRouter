@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { writeFileSync, unlink } from 'fs';
 import { Rule, Service } from './constants';
-import { addRoute, updateRouter } from './handleYML';
+import { addRoute, routes, updateRouter } from './handleYML';
 import { initTerminal, run } from './terminal';
 import express from 'express';
 import { handleRouting } from './router';
@@ -28,7 +28,7 @@ const main = async () => {
       ),
     );
     rules.forEach((rule: Rule) =>
-      addRoute({
+      routes.push({
         deployment: rule.http.paths[0].backend.service.name,
         host: rule.host,
         port: servicePortMap[rule.http.paths[0].backend.service.name],

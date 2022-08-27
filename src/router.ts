@@ -48,6 +48,8 @@ export const handleRouting = (app: Express) => {
   });
   app.post('/route', requireAuth, async (req, res) => {
     if (
+      typeof req.body.host === 'string' &&
+      typeof req.body.deployment === 'string' &&
       !routes.find((route) => route.host === req.body.host) &&
       !routes.find((route) => route.deployment === req.body.deployment) &&
       (typeof req.body.port === 'number' || req.body.port === undefined) &&
@@ -61,7 +63,7 @@ export const handleRouting = (app: Express) => {
   });
   app.delete('/route', requireAuth, async (req, res) => {
     if (routes.find((route) => route.deployment === req.body.deployment)) {
-      await removeRoute(req.body, true);
+      await removeRoute(req.body);
       res.send('success');
     } else {
       throw 'Invalid request';
