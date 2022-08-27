@@ -24,45 +24,47 @@ const formatIndex = () =>
     routes: routes
       .map(
         ({ host, deployment, port }) => `
-          <td
-            class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-          >${deployment}</td>
-          <td
-            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-          >${host}</td>
-          <td
-            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-          >${port}</td>
-          <td
-            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-          >
-            <button
-              class="text-green-600 hover:text-green-700"
-              onclick="refresh('${deployment}')"
+          <tr>
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+            >${deployment}</td>
+            <td
+              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+            >${host}</td>
+            <td
+              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+            >${port}</td>
+            <td
+              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
             >
-              Refresh
-            </button>
-          </td>
-          <td
-            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-          >
-            <button
-              class="text-blue-600 hover:text-blue-700"
-              onclick="edit('${deployment}')"
+              <button
+                class="text-green-600 hover:text-green-700"
+                onclick="refresh('${deployment}')"
+              >
+                Refresh
+              </button>
+            </td>
+            <td
+              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
             >
-              Edit
-            </button>
-          </td>
-          <td
-            class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-          >
-            <button
-              class="text-red-600 hover:text-red-700"
-              onclick="remove('${deployment}')"
+              <button
+                class="text-blue-600 hover:text-blue-700"
+                onclick="edit('${deployment}')"
+              >
+                Edit
+              </button>
+            </td>
+            <td
+              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
             >
-              Delete
-            </button>
-          </td>`,
+              <button
+                class="text-red-600 hover:text-red-700"
+                onclick="remove('${deployment}')"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>`,
       )
       .join(''),
   });
@@ -95,7 +97,7 @@ export const handleRouting = (app: Express) => {
     res.clearCookie('auth');
     res.send('success');
   });
-  app.put('/route', requireAuth, async (req, res) => {
+  app.put('/route', requireAuth, (req, res) => {
     try {
       if (
         typeof req.body.host === 'string' &&
@@ -103,7 +105,7 @@ export const handleRouting = (app: Express) => {
         routes.find(({ deployment }) => deployment === req.body.deployment) &&
         typeof req.body.port === 'number'
       ) {
-        await editRoute(req.body);
+        editRoute(req.body);
         res.send('success');
       } else {
         throw 'Invalid request';
@@ -112,10 +114,10 @@ export const handleRouting = (app: Express) => {
       res.status(400).send(e.message || e);
     }
   });
-  app.post('/refresh', requireAuth, async (req, res) => {
+  app.post('/refresh', requireAuth, (req, res) => {
     try {
       if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
-        await refreshDeployment(req.body.deployment);
+        refreshDeployment(req.body.deployment);
         res.send('success');
       } else {
         throw 'Invalid request';
@@ -124,7 +126,7 @@ export const handleRouting = (app: Express) => {
       res.status(400).send(e.message || e);
     }
   });
-  app.post('/route', requireAuth, async (req, res) => {
+  app.post('/route', requireAuth, (req, res) => {
     try {
       if (
         typeof req.body.host === 'string' &&
@@ -134,7 +136,7 @@ export const handleRouting = (app: Express) => {
         typeof req.body.port === 'number' &&
         typeof req.body.image === 'string'
       ) {
-        await addRoute(req.body, req.body.image);
+        addRoute(req.body, req.body.image);
         res.send('success');
       } else {
         throw 'Invalid request';
@@ -143,10 +145,10 @@ export const handleRouting = (app: Express) => {
       res.status(400).send(e.message || e);
     }
   });
-  app.delete('/route', requireAuth, async (req, res) => {
+  app.delete('/route', requireAuth, (req, res) => {
     try {
       if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
-        await removeRoute(req.body);
+        removeRoute(req.body.deployment);
         res.send('success');
       } else {
         throw 'Invalid request';
