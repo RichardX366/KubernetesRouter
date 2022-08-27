@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config();
 import { writeFileSync, unlink } from 'fs';
 import { Rule, Service } from './constants';
-import { routes, updateRouter } from './handleYML';
+import { getServiceYML, routes, updateRouter } from './handleYML';
 import { initTerminal, run } from './terminal';
 import express from 'express';
 import { handleRouting } from './router';
@@ -35,7 +35,7 @@ const main = async () => {
       }),
     );
   } catch {}
-  await updateRouter();
+  await updateRouter(getServiceYML(routes[0]));
   const app = express();
   app.use(express.json());
   app.use(cookieParser(process.env.COOKIE_SECRET));

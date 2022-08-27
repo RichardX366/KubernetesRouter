@@ -22,4 +22,4 @@
 14. Set the environment variable `PASSWORD` to the password you want to secure the dashboard with
 15. Set the environment variable `COOKIE_SECRET` to the string you want to secure your dashboard cookies with (random string recommended as you don't have to remember it)
 16. Set the environment variable `IP` to the name static IP address you reserved (e.g. `autopilot-ip`)
-17. Deploy and wait for the ingress to be set up!
+17. Deploy with the name `router` and wait for the ingress to be set up!

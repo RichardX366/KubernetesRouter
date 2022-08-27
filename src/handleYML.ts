@@ -33,7 +33,7 @@ spec:
     )
     .join('')}`;
 
-const getServiceYML = ({ deployment, port }: Route) => `apiVersion: v1
+export const getServiceYML = ({ deployment, port }: Route) => `apiVersion: v1
 kind: Service
 metadata:
   name: ${deployment}

@@ -8,5 +8,4 @@ RUN npx tsc
 RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-399.0.0-linux-x86_64.tar.gz
 RUN tar -xf google-cloud-cli-399.0.0-linux-x86_64.tar.gz
 RUN google-cloud-sdk/bin/gcloud components install kubectl
-RUN google-cloud-sdk/bin/gcloud components install gke-gcloud-auth-plugin
 CMD ["yarn", "start"]
