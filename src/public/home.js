@@ -84,7 +84,7 @@ async function submit() {
         port: +portInput.value,
         image: imageInput.value,
       }),
-    }).then((res) => res.text());
+    });
     if (ok) {
       const row = document.createElement('tr');
       row.innerHTML = `
