@@ -1,12 +1,12 @@
 import { config } from 'dotenv';
+config();
 import { writeFileSync, unlink } from 'fs';
 import { Rule, Service } from './constants';
 import { addRoute, routes, updateRouter } from './handleYML';
 import { initTerminal, run } from './terminal';
 import express from 'express';
 import { handleRouting } from './router';
-
-config();
+import cookieParser from 'cookie-parser';
 
 writeFileSync('key.json', process.env.GKE_SERVICE_ACCOUNT_KEY as string);
 
@@ -36,8 +36,10 @@ const main = async () => {
     );
   } catch {}
   await updateRouter();
-
   const app = express();
+  app.use(express.json());
+  app.use(cookieParser(process.env.COOKIE_SECRET));
+  app.use(express.static('src/public'));
   handleRouting(app);
   app.listen(80, () => console.log('The router is listening on port 80!'));
 };

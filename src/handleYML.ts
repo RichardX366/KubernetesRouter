@@ -6,6 +6,7 @@ export const routes: Route[] = [
   {
     host: process.env.HOST as string,
     deployment: 'router',
+    port: 80,
   },
 ];
 
@@ -41,7 +42,7 @@ spec:
   ports:
     - name: web
       port: 80
-      targetPort: ${port || 80}
+      targetPort: ${port}
 
   selector:
     app: ${deployment}`;
@@ -81,6 +82,12 @@ export const updateRouter = async (...additionalObjects: string[]) => {
 export const addRoute = async (route: Route, image: string) => {
   routes.push(route);
   await updateRouter(getDeploymentYML(route, image), getServiceYML(route));
+};
+
+export const editRoute = async (route: Route) => {
+  const index = routes.findIndex(({ deployment: d }) => d === route.deployment);
+  routes[index] = route;
+  await updateRouter(getServiceYML(route));
 };
 
 export const removeRoute = async (deployment: string) => {

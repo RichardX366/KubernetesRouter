@@ -25,7 +25,7 @@ export interface Service {
 export interface Route {
   host: string;
   deployment: string;
-  port?: number;
+  port: number;
 }
 
 export const hydrateBrackets = (

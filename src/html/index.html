@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kubernetes Router | Home</title>
+    <link rel="shortcut icon" type=image/png
+    href="https://kubernetes.io/images/favicon.png">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-cyan-600 to-sky-600 bg-fixed p-6 grid grid-cols-1 md:grid-cols-4 gap-6"
+  >
+    <div class="col-span-3">
+      <div class="bg-white rounded-lg p-6">
+        <h1 class="text-3xl">Routes</h1>
+        <div class="flex flex-col mt-4">
+          <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div
+              class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
+            >
+              <div
+                class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+              >
+                <table class="min-w-full divide-y divide-gray-300">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                      >
+                        Deployment
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Host
+                      </th>
+                      <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Port
+                      </th>
+                      <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                        <span class="sr-only">Edit</span>
+                      </th>
+                      <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                        <span class="sr-only">Delete</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200 bg-white" id="table">
+                    {routes}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-span-3 md:col-span-1">
+      <div class="bg-white rounded-lg p-6 grid gap-2">
+        <div class="flex justify-between">
+          <h1 class="text-3xl" id="formTitle">Create Deployment</h1>
+          <button
+            id="createButton"
+            style="display: none"
+            onclick="createMode()"
+            class="inline-flex items-center justify-center px-2 py-1 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Create
+          </button>
+        </div>
+        <div>
+          <input
+            type="text"
+            label="Deployment"
+            placeholder="demo-app"
+            is="styled-input"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            label="Host"
+            placeholder="demo.google.com"
+            is="styled-input"
+          />
+        </div>
+        <div>
+          <input
+            type="number"
+            label="Port"
+            placeholder="80"
+            value="80"
+            is="styled-input"
+          />
+        </div>
+        <div id="imageElem">
+          <input
+            type="text"
+            label="Image"
+            placeholder="docker/hello-world"
+            description="Must be hosted on docker hub"
+            is="styled-input"
+          />
+        </div>
+        <button
+          onclick="submit()"
+          class="inline-flex items-center justify-center py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+    <script src="global.js"></script>
+    <script src="home.js"></script>
+  </body>
+</html>

@@ -3,3 +3,4 @@ node_modules/
 dist/
 key.json
 google-cloud-sdk/
+style.css

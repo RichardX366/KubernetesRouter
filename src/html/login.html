@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kubernetes Router | Login</title>
+    <link rel="shortcut icon" type=image/png
+    href="https://kubernetes.io/images/favicon.png">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-cyan-600 to-sky-600 bg-fixed flex justify-center items-center absolute inset-0"
+  >
+    <div class="bg-white rounded-lg p-6 w-96 grid gap-4">
+      <h1 class="text-4xl text-center">Log In</h1>
+      <div>
+        <input
+          type="password"
+          label="Password"
+          placeholder="**********"
+          is="styled-input"
+          onenter="submit()"
+        />
+      </div>
+      <button
+        onclick="submit()"
+        class="inline-flex items-center justify-center py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Submit
+      </button>
+    </div>
+    <script src="global.js"></script>
+    <script src="login.js"></script>
+  </body>
+</html>
