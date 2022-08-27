@@ -10,12 +10,12 @@ const imageElem = document.querySelector('#imageElem');
 
 async function remove(deployment) {
   if (!confirm('Are you sure you want to delete this deployment?')) return;
-  const { response } = await fetch('/route', {
+  const { ok } = await fetch('/route', {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ deployment }),
   });
-  if (response) {
+  if (ok) {
     Array.from(table.children)
       .find((row) => row.children[0].textContent === deployment)
       .remove();
@@ -46,12 +46,12 @@ function edit(deployment) {
 
 function refresh(deployment) {
   if (!confirm('Are you sure you want to refresh this deployment?')) return;
-  const { response } = fetch('/refresh', {
+  const { ok } = fetch('/refresh', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ deployment }),
   });
-  if (response) {
+  if (ok) {
     alert('Deployment successfully refreshed');
   } else {
     alert('An error occurred with refreshing this deployment');
@@ -75,7 +75,7 @@ async function submit() {
     if (!confirm('Are you sure you want to create this new deployment?')) {
       return;
     }
-    const { response } = await fetch('/route', {
+    const { ok } = await fetch('/route', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -84,8 +84,8 @@ async function submit() {
         port: +portInput.value,
         image: imageInput.value,
       }),
-    });
-    if (response) {
+    }).then((res) => res.text());
+    if (ok) {
       const row = document.createElement('tr');
       row.innerHTML = `
         <td
@@ -136,7 +136,7 @@ async function submit() {
     if (!confirm('Are you sure you want to update this deployment?')) {
       return;
     }
-    const { response } = await fetch('/route', {
+    const { ok } = await fetch('/route', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -145,7 +145,7 @@ async function submit() {
         port: +portInput.value,
       }),
     });
-    if (response) {
+    if (ok) {
       const row = Array.from(table.children).find(
         (row) => row.children[0].textContent === deploymentInput.value,
       );
