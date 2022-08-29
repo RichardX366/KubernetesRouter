@@ -1,8 +1,8 @@
 import { config } from 'dotenv';
 config();
 import { writeFileSync, unlink } from 'fs';
-import { Rule, Service } from './constants';
-import { getServiceYML, routes, updateRouter } from './handleYML';
+import { ConfigMap, Deployment, Rule, Service } from './constants';
+import { getServiceJSON, routes, updateRouter } from './handleJSON';
 import { initTerminal } from './terminal';
 import express from 'express';
 import { handleRouting } from './router';
@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser';
 import { execSync } from 'child_process';
 
 writeFileSync('key.json', process.env.GKE_SERVICE_ACCOUNT_KEY as string);
-
 initTerminal();
 unlink('key.json', () => {});
 try {
@@ -19,7 +18,7 @@ try {
   ).spec.rules.filter(
     (rule: Rule) => rule.http.paths[0].backend.service.name !== 'router',
   );
-  const servicePortMap: { [k: string]: number } = Object.fromEntries(
+  const portMap: { [k: string]: number } = Object.fromEntries(
     JSON.parse(execSync('kubectl -ojson get service').toString()).items.map(
       (service: Service) => [
         service.metadata.name,
@@ -27,15 +26,30 @@ try {
       ],
     ),
   );
+  const envMap: { [k: string]: { [k: string]: string } } = Object.fromEntries(
+    JSON.parse(execSync('kubectl -ojson get configmap').toString()).items.map(
+      (map: ConfigMap) => [map.metadata.labels.app, map.data],
+    ),
+  );
+  const imageMap: { [k: string]: string } = Object.fromEntries(
+    JSON.parse(execSync('kubectl -ojson get deployment').toString()).items.map(
+      (deployment: Deployment) => [
+        deployment.metadata.name,
+        deployment.spec.template.spec.containers[0].image,
+      ],
+    ),
+  );
   rules.forEach((rule: Rule) =>
     routes.push({
       deployment: rule.http.paths[0].backend.service.name,
       host: rule.host,
-      port: servicePortMap[rule.http.paths[0].backend.service.name],
+      port: portMap[rule.http.paths[0].backend.service.name],
+      env: envMap[rule.http.paths[0].backend.service.name],
+      image: imageMap[rule.http.paths[0].backend.service.name],
     }),
   );
 } catch {}
-updateRouter(getServiceYML(routes[0]));
+updateRouter(getServiceJSON(routes[0]));
 const app = express();
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));

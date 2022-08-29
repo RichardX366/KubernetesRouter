@@ -50,14 +50,14 @@
                       >
                         Port
                       </th>
-                      <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                        <span class="sr-only">Refresh</span>
+                      <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Image
                       </th>
                       <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                        <span class="sr-only">Edit</span>
-                      </th>
-                      <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">Action</span>
                       </th>
                     </tr>
                   </thead>
@@ -84,39 +84,42 @@
             Create
           </button>
         </div>
-        <div>
-          <input
-            type="text"
-            label="Deployment"
-            placeholder="demo-app"
-            is="styled-input"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            label="Host"
-            placeholder="demo.google.com"
-            is="styled-input"
-          />
-        </div>
-        <div>
-          <input
-            type="number"
-            label="Port"
-            placeholder="80"
-            value="80"
-            is="styled-input"
-          />
-        </div>
-        <div id="imageElem">
-          <input
-            type="text"
-            label="Image"
-            placeholder="docker/hello-world"
-            description="Must be hosted on docker hub"
-            is="styled-input"
-          />
+        <styled-input label="Deployment" placeholder="demo-app"></styled-input>
+        <styled-input label="Host" placeholder="demo.google.com"></styled-input>
+        <styled-input
+          t="number"
+          label="Port"
+          placeholder="80"
+          value="80"
+        ></styled-input>
+        <styled-input
+          label="Image"
+          placeholder="docker/hello-world"
+          description="Must be hosted on docker hub"
+        ></styled-input>
+        <div class="grid">
+          <h1 class="">Environment Variables:</h1>
+          <div id="env"></div>
+          <div class="flex justify-between">
+            <button
+              onclick="newEnv()"
+              class="text-blue-500 hover:text-blue-600"
+            >
+              Add Environment Variable
+            </button>
+            <label
+              for="import"
+              class="text-green-600 hover:text-green-700 cursor-pointer"
+            >
+              Import .env
+            </label>
+            <input
+              id="import"
+              type="file"
+              onchange="handleEnvUpload(this)"
+              class="hidden"
+            />
+          </div>
         </div>
         <button
           onclick="submit()"

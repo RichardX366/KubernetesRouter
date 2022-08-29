@@ -26,6 +26,34 @@ export interface Route {
   host: string;
   deployment: string;
   port: number;
+  env: { [key: string]: string };
+  image: string;
+}
+
+export interface ConfigMap {
+  data: { [key: string]: string };
+  metadata: {
+    labels: {
+      app: string;
+    };
+  };
+}
+
+export interface Deployment {
+  metadata: {
+    name: 'among-us-baguette-discord-bot';
+  };
+  spec: {
+    template: {
+      spec: {
+        containers: [
+          {
+            image: 'richardx366/amongusbaguette:latest';
+          },
+        ];
+      };
+    };
+  };
 }
 
 export const hydrateBrackets = (

@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node dist/index",
     "tailwind": "tailwindcss -i ./src/tailwind.css -o ./src/public/style.css -w",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon -w ./src src/index.ts"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",

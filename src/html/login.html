@@ -12,15 +12,12 @@
   >
     <div class="bg-white rounded-lg p-6 w-96 grid gap-4">
       <h1 class="text-4xl text-center">Log In</h1>
-      <div>
-        <input
-          type="password"
-          label="Password"
-          placeholder="**********"
-          is="styled-input"
-          onenter="submit()"
-        />
-      </div>
+      <styled-input
+        t="password"
+        label="Password"
+        placeholder="**********"
+        onenter="submit()"
+      ></styled-input>
       <button
         onclick="submit()"
         class="inline-flex items-center justify-center py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
