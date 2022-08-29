@@ -5,10 +5,11 @@
     <link rel="shortcut icon" type=image/png
     href="https://kubernetes.io/images/favicon.png">
     <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
 
   <body
-    class="bg-gradient-to-br from-cyan-600 to-sky-600 bg-fixed p-6 grid grid-cols-1 md:grid-cols-4 gap-6"
+    class="bg-gradient-to-br from-cyan-600 to-sky-600 bg-fixed p-6 grid grid-cols-1 sm:grid-cols-4 gap-6"
   >
     <div class="col-span-3">
       <div class="bg-white rounded-lg p-6">
@@ -22,12 +23,10 @@
           </button>
         </div>
         <div class="flex flex-col mt-4">
-          <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div
-              class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
-            >
+          <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6">
               <div
-                class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+                class="overflow-hidden shadow ring-1 ring-black ring-opacity-5"
               >
                 <table class="min-w-full divide-y divide-gray-300">
                   <thead class="bg-gray-50">
@@ -71,7 +70,7 @@
         </div>
       </div>
     </div>
-    <div class="col-span-3 md:col-span-1">
+    <div class="col-span-3 sm:col-span-1">
       <div class="bg-white rounded-lg p-6 grid gap-2">
         <div class="flex justify-between">
           <h1 class="text-3xl" id="formTitle">Create Deployment</h1>
