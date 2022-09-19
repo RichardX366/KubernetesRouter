@@ -139,6 +139,24 @@ export const handleRouting = (app: Express) => {
       res.status(400).send(e.message || e);
     }
   });
+  app.post('/manualAuthRefresh', (req, res) => {
+    try {
+      if (
+        req.body.password === process.env.PASSWORD &&
+        routes.find(({ deployment }) => deployment === req.body.deployment)
+      ) {
+        refreshDeployment(req.body.deployment);
+        setTimeout(() => res.send('success'), 75 + Math.random() * 50);
+      } else {
+        throw 'Invalid request';
+      }
+    } catch (e: any) {
+      setTimeout(
+        () => res.status(400).send(e.message || e),
+        75 + Math.random() * 50,
+      );
+    }
+  });
   app.post('/route', requireAuth, async (req, res) => {
     try {
       if (
