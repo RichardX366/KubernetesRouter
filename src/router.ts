@@ -1,6 +1,5 @@
-import { Express, Handler } from 'express';
+import { Express } from 'express';
 import { readFileSync } from 'fs';
-import { cwd } from 'process';
 import { hydrateBrackets } from './constants';
 import {
   addRoute,
@@ -9,17 +8,6 @@ import {
   removeRoute,
   routes,
 } from './handleJSON';
-
-const requireAuth: Handler = (req, res, next) => {
-  if (req.signedCookies?.auth === process.env.PASSWORD) {
-    next();
-  } else {
-    setTimeout(
-      () => res.status(401).send('Unauthorized'),
-      75 + Math.random() * 50,
-    );
-  }
-};
 
 const index = readFileSync('src/html/index.html').toString();
 
@@ -76,122 +64,62 @@ const formatIndex = () =>
   });
 
 export const handleRouting = (app: Express) => {
-  app.get('/', (req, res) =>
-    setTimeout(() => {
-      if (req.signedCookies?.auth === process.env.PASSWORD) {
-        res.send(formatIndex());
-      } else {
-        res.sendFile(cwd() + '/src/html/login.html');
-      }
-    }, 75 + Math.random() * 50),
-  );
-  app.post('/password', (req, res) => {
-    setTimeout(() => {
-      if (req.body.password === process.env.PASSWORD) {
-        res.cookie('auth', process.env.PASSWORD, {
-          httpOnly: true,
-          secure: true,
-          signed: true,
-        });
-        res.send('success');
-      } else {
-        res.send('Incorrect password!');
-      }
-    }, 75 + Math.random() * 50);
-  });
-  app.post('/logout', (req, res) => {
-    res.clearCookie('auth');
-    res.send('success');
-  });
-  app.put('/route', requireAuth, async (req, res) => {
-    try {
-      if (
-        typeof req.body.host === 'string' &&
-        typeof req.body.deployment === 'string' &&
-        routes.find(({ deployment }) => deployment === req.body.deployment) &&
-        typeof req.body.port === 'number' &&
-        typeof req.body.image === 'string' &&
-        typeof req.body.env === 'object' &&
-        Object.entries(req.body.env).reduce(
-          (prev, [key, value]) =>
-            prev ? typeof key === 'string' && typeof value === 'string' : false,
-          true,
-        )
-      ) {
-        await editRoute(req.body);
-        res.send('success');
-      } else {
-        throw 'Invalid request';
-      }
-    } catch (e: any) {
-      res.status(400).send(e.message || e);
+  app.get('/', (req, res) => res.send(formatIndex()));
+  app.put('/route', async (req, res) => {
+    if (
+      typeof req.body.host === 'string' &&
+      typeof req.body.deployment === 'string' &&
+      routes.find(({ deployment }) => deployment === req.body.deployment) &&
+      typeof req.body.port === 'number' &&
+      typeof req.body.image === 'string' &&
+      typeof req.body.env === 'object' &&
+      Object.entries(req.body.env).reduce(
+        (prev, [key, value]) =>
+          prev ? typeof key === 'string' && typeof value === 'string' : false,
+        true,
+      )
+    ) {
+      await editRoute(req.body);
+      res.send('success');
+    } else {
+      throw 'Invalid request';
     }
   });
-  app.post('/refresh', requireAuth, (req, res) => {
-    try {
-      if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
-        refreshDeployment(req.body.deployment);
-        res.send('success');
-      } else {
-        throw 'Invalid request';
-      }
-    } catch (e: any) {
-      res.status(400).send(e.message || e);
+  app.post('/refresh', (req, res) => {
+    if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
+      refreshDeployment(req.body.deployment);
+      res.send('success');
+    } else {
+      throw 'Invalid request';
     }
   });
-  app.post('/manualAuthRefresh', (req, res) => {
-    try {
-      if (
-        req.body.password === process.env.PASSWORD &&
-        routes.find(({ deployment }) => deployment === req.body.deployment)
-      ) {
-        refreshDeployment(req.body.deployment);
-        setTimeout(() => res.send('success'), 75 + Math.random() * 50);
-      } else {
-        throw 'Invalid request';
-      }
-    } catch (e: any) {
-      setTimeout(
-        () => res.status(400).send(e.message || e),
-        75 + Math.random() * 50,
-      );
+  app.post('/route', async (req, res) => {
+    if (
+      typeof req.body.host === 'string' &&
+      typeof req.body.deployment === 'string' &&
+      !routes.find(({ host }) => host === req.body.host) &&
+      !routes.find(({ deployment }) => deployment === req.body.deployment) &&
+      typeof req.body.port === 'number' &&
+      typeof req.body.image === 'string' &&
+      typeof req.body.env === 'object' &&
+      Object.entries(req.body.env).reduce(
+        (prev, [key, value]) =>
+          prev ? typeof key === 'string' && typeof value === 'string' : false,
+        true,
+      )
+    ) {
+      await addRoute(req.body);
+      res.send('success');
+    } else {
+      throw 'Invalid request';
     }
   });
-  app.post('/route', requireAuth, async (req, res) => {
-    try {
-      if (
-        typeof req.body.host === 'string' &&
-        typeof req.body.deployment === 'string' &&
-        !routes.find(({ host }) => host === req.body.host) &&
-        !routes.find(({ deployment }) => deployment === req.body.deployment) &&
-        typeof req.body.port === 'number' &&
-        typeof req.body.image === 'string' &&
-        typeof req.body.env === 'object' &&
-        Object.entries(req.body.env).reduce(
-          (prev, [key, value]) =>
-            prev ? typeof key === 'string' && typeof value === 'string' : false,
-          true,
-        )
-      ) {
-        await addRoute(req.body);
-        res.send('success');
-      } else {
-        throw 'Invalid request';
-      }
-    } catch (e: any) {
-      res.status(400).send(e.message || e);
-    }
-  });
-  app.delete('/route', requireAuth, async (req, res) => {
-    try {
-      if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
-        await removeRoute(req.body.deployment);
-        res.send('success');
-      } else {
-        throw 'Invalid request';
-      }
-    } catch (e: any) {
-      res.status(400).send(e.message || e);
+  app.delete('/route', async (req, res) => {
+    if (routes.find(({ deployment }) => deployment === req.body.deployment)) {
+      await removeRoute(req.body.deployment);
+      res.send('success');
+    } else {
+      throw 'Invalid request';
     }
   });
 };

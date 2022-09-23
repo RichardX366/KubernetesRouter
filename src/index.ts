@@ -4,10 +4,12 @@ import { writeFileSync, unlink } from 'fs';
 import { ConfigMap, Deployment, Rule, Service } from './constants';
 import { getServiceJSON, routes, updateRouter } from './handleJSON';
 import { initTerminal } from './terminal';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { handleRouting } from './router';
 import cookieParser from 'cookie-parser';
 import { execSync } from 'child_process';
+import routeComponentsScript from '@richardx/html-components';
+import authScreen from 'auth-screen';
 
 writeFileSync('key.json', process.env.GKE_SERVICE_ACCOUNT_KEY as string);
 initTerminal();
@@ -54,5 +56,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static('src/public'));
+routeComponentsScript(app);
+app.use(authScreen(process.env.PASSWORD as string));
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  return res.status(400).send(err.message);
+});
 handleRouting(app);
 app.listen(80, () => console.log('The router is listening on port 80!'));
