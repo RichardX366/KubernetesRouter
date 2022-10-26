@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import { execSync } from 'child_process';
 import routeComponentsScript from '@richardx/html-components';
 import authScreen from 'auth-screen';
+import 'express-async-errors';
 
 writeFileSync('key.json', process.env.GKE_SERVICE_ACCOUNT_KEY as string);
 initTerminal();
