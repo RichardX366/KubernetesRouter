@@ -30,7 +30,7 @@ try {
   );
   const envMap: { [k: string]: { [k: string]: string } } = Object.fromEntries(
     JSON.parse(execSync('kubectl -ojson get configmap').toString()).items.map(
-      (map: ConfigMap) => [map.metadata.labels.app, map.data],
+      (map: ConfigMap) => [map.metadata?.labels?.app, map.data],
     ),
   );
   const imageMap: { [k: string]: string } = Object.fromEntries(
@@ -50,7 +50,9 @@ try {
       image: imageMap[rule.http.paths[0].backend.service.name],
     }),
   );
-} catch {}
+} catch (e) {
+  console.log(e);
+}
 updateRouter(getServiceJSON(routes[0]));
 const app = express();
 app.use(express.json());

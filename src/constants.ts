@@ -33,7 +33,7 @@ export interface Route {
 export interface ConfigMap {
   data: { [key: string]: string };
   metadata: {
-    labels: {
+    labels?: {
       app: string;
     };
   };
