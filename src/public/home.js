@@ -180,7 +180,10 @@ function newEnv(key = '', value = '') {
   div.className = 'flex gap-2 my-1';
   div.innerHTML = `
     <styled-input class="w-full" placeholder="Key" value="${key}"></styled-input>
-    <styled-input class="w-full" placeholder="Value" t="password" value="${value}"></styled-input>
+    <styled-input class="w-full" placeholder="Value" t="password" value="${value.replaceAll(
+      '"',
+      '&quot;',
+    )}"></styled-input>
     <div onclick="this.parentElement.remove()" class="flex items-center text-gray-400 hover:text-red-500">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6 cursor-pointer">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
